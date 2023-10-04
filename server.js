@@ -1,7 +1,11 @@
 const express = require("express");
+const { createServer } = require('node:http');
 const app = express();
 const userRouter = require("./routes/user");
 const chatRouter = require("./routes/chat");
+const { Server } = require('socket.io');
+const server = createServer(app);
+const io = new Server(server);
 const path = require("path");
 const PORT = 3000;
 
@@ -21,7 +25,9 @@ app.get("/", (req, res) => {
 
 // ルーティング
 app.use("/user", userRouter);
-app.use("/chat", chatRouter);
+app.use("/chat", chatRouter(io));
 
 
-app.listen(PORT, () =>console.log("start server"));
+server.listen(PORT, () =>console.log("start server"));
+
+module.exports = io;
