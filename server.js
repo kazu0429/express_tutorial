@@ -2,6 +2,7 @@ const express = require("express");
 const { createServer } = require('node:http');
 const app = express();
 const userRouter = require("./routes/user");
+const weatherRouter = require("./routes/weather");
 const chatRouter = require("./routes/chat");
 const { Server } = require('socket.io');
 const server = createServer(app);
@@ -20,14 +21,16 @@ app.get("/", (req, res) => {
     // res.sendStatus(400); // クライアントエラー
     // res.status(500).send("error"); // ブラウザ上にエラー表示
     // res.status(500).json({msg:"error"});
-    res.render("index", {text:"NodejsとExpress"})
+    // res.render("index", {text:"NodejsとExpress"})
+    res.send("Hello World");
 })
 
 // ルーティング
 app.use("/user", userRouter);
+app.use("/weather", weatherRouter(io));
 app.use("/chat", chatRouter(io));
 
 
 server.listen(PORT, () =>console.log("start server"));
 
-module.exports = io;
+// module.exports = io;
