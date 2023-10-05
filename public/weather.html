@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <h1>weather page</h1>
+    <p>調べたい地名を入力してください</p>
+    <form id="form" action="">
+        <input id="input" autocomplete="off" placeholder="Fukuoka" /><button>Send</button>
+    </form>
+    <div id="weather"></div>
+
+    <script src="/socket.io/socket.io.js"></script>
+    <script>
+        let socket = io();
+        
+        const form = document.getElementById("form");
+        const input = document.getElementById("input");
+        const weatherInfo = document.getElementById("weather");
+
+        form.addEventListener("submit", function(e){
+            e.preventDefault();
+            while(weatherInfo.lastChild){
+                weatherInfo.removeChild(weatherInfo.lastChild);
+            }
+            if(input.value){
+                socket.emit("weather api", input.value);
+                // input.value  = "";
+            }
+        });
+
+        socket.on("weather api", function(weather){
+            const weatherObject = JSON.parse(weather);
+            const keys = Object.keys(JSON.parse(weather));
+            keys.forEach((key) => {
+                var item = document.createElement("p");
+                item.textContent = key + " : " + weatherObject[key];
+                weatherInfo.appendChild(item);
+            })
+        })
+    </script>
+</body>
+</html>
